@@ -7,6 +7,7 @@ import threading
 import time
 from distutils.dir_util import copy_tree
 from subprocess import Popen
+from requests_aws4auth import AWS4Auth
 
 import plac
 import pymysql
@@ -423,7 +424,7 @@ Do you really want to do this? Write 'yes' to confirm: {yes}"""
         try:
             # initialize DB connection
             es = Elasticsearch([self.elasticsearch["host"]],
-                               http_auth=(self.elasticsearch["username"], self.elasticsearch["secret"]),
+                               http_auth=AWS4Auth(self.elasticsearch["accessid"], self.elasticsearch["accesssecret"], 'ap-south-1', 'es'),
                                port=self.elasticsearch["port"],
                                use_ssl=self.elasticsearch["use_ca_certificates"],
                                verify_certs=self.elasticsearch["use_ca_certificates"],
