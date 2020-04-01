@@ -436,7 +436,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
 
         self.es = Elasticsearch(
             [self.database["host"]],
-            http_auth=AWS4Auth(str(self.elasticsearch["accessid"]), str(self.elasticsearch["accesssecret"]), 'ap-south-1', 'es'),
+            http_auth=AWS4Auth(str(self.database["accessid"]), str(self.database["accesssecret"]), 'ap-south-1', 'es'),
             port=self.database["port"],
             use_ssl=self.database["use_ca_certificates"],
             verify_certs=self.database["use_ca_certificates"],
