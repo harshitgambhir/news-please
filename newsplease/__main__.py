@@ -428,8 +428,8 @@ Do you really want to do this? Write 'yes' to confirm: {yes}"""
                                port=self.elasticsearch["port"],
                                use_ssl=self.elasticsearch["use_ca_certificates"],
                                verify_certs=self.elasticsearch["use_ca_certificates"],
-                               ca_certs=self.elasticsearch["ca_cert_path"],
-                               client_cert=self.elasticsearch["client_cert_path"],
+                            #    ca_certs=self.elasticsearch["ca_cert_path"],
+                            #    client_cert=self.elasticsearch["client_cert_path"],
                                client_key=self.elasticsearch["client_key_path"],
                                connection_class=RequestsHttpConnection)
 
