@@ -10,8 +10,9 @@ import sys
 
 import pymysql
 from dateutil import parser as dateparser
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, RequestsHttpConnection
 from scrapy.exceptions import DropItem
+from requests_aws4auth import AWS4Auth
 
 from NewsArticle import NewsArticle
 from .extractor import article_extractor
@@ -435,13 +436,14 @@ class ElasticsearchStorage(ExtractedInformationStorage):
 
         self.es = Elasticsearch(
             [self.database["host"]],
-            http_auth=(str(self.database["username"]), str(self.database["secret"])),
+            http_auth=AWS4Auth(str(self.elasticsearch["accessid"]), str(self.elasticsearch["accesssecret"]), 'ap-south-1', 'es'),
             port=self.database["port"],
             use_ssl=self.database["use_ca_certificates"],
             verify_certs=self.database["use_ca_certificates"],
             ca_certs=self.database["ca_cert_path"],
             client_cert=self.database["client_cert_path"],
             client_key=self.database["client_key_path"]
+            connection_class=RequestsHttpConnection
         )
         self.index_current = self.database["index_current"]
         self.index_archive = self.database["index_archive"]
