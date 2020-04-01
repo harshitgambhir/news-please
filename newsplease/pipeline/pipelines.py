@@ -442,7 +442,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             verify_certs=self.database["use_ca_certificates"],
             ca_certs=self.database["ca_cert_path"],
             client_cert=self.database["client_cert_path"],
-            client_key=self.database["client_key_path"]
+            client_key=self.database["client_key_path"],
             connection_class=RequestsHttpConnection
         )
         self.index_current = self.database["index_current"]
