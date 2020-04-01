@@ -11,7 +11,7 @@ from requests_aws4auth import AWS4Auth
 
 import plac
 import pymysql
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, RequestsHttpConnection
 from scrapy.utils.log import configure_logging
 
 cur_path = os.path.dirname(os.path.realpath(__file__))
@@ -430,7 +430,8 @@ Do you really want to do this? Write 'yes' to confirm: {yes}"""
                                verify_certs=self.elasticsearch["use_ca_certificates"],
                                ca_certs=self.elasticsearch["ca_cert_path"],
                                client_cert=self.elasticsearch["client_cert_path"],
-                               client_key=self.elasticsearch["client_key_path"])
+                               client_key=self.elasticsearch["client_key_path"],
+                               connection_class=RequestsHttpConnection)
 
             print("Resetting Elasticsearch database...")
             es.indices.delete(index=self.elasticsearch["index_current"], ignore=[400, 404])
