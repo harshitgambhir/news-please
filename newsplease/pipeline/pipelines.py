@@ -144,14 +144,14 @@ class MySQLStorage(object):
                           %(ancestor)s, %(descendant)s, %(version)s,\
                           %(rss_title)s)")
 
-    insert_archive = ("INSERT INTO ArchiveVersions(id, local_path,\
-                          modified_date,download_date,source_domain,url,\
-                          html_title, ancestor, descendant, version,\
-                          rss_title) VALUES (%(db_id)s, %(local_path)s,\
-                          %(modified_date)s, %(download_date)s,\
-                          %(source_domain)s, %(url)s, %(html_title)s,\
-                          %(ancestor)s, %(descendant)s, %(version)s,\
-                          %(rss_title)s)")
+    # insert_archive = ("INSERT INTO ArchiveVersions(id, local_path,\
+    #                       modified_date,download_date,source_domain,url,\
+    #                       html_title, ancestor, descendant, version,\
+    #                       rss_title) VALUES (%(db_id)s, %(local_path)s,\
+    #                       %(modified_date)s, %(download_date)s,\
+    #                       %(source_domain)s, %(url)s, %(html_title)s,\
+    #                       %(ancestor)s, %(descendant)s, %(version)s,\
+    #                       %(rss_title)s)")
 
     delete_from_current = ("DELETE FROM CurrentVersions WHERE id = %s")
 
@@ -249,14 +249,14 @@ class MySQLStorage(object):
                     pymysql.IntegrityError, TypeError) as error:
                 self.log.error("Something went wrong in delete: %s", error)
 
-            # Add the old version to the ArchiveVersion table
-            try:
-                self.cursor.execute(self.insert_archive, old_version_list)
-                self.conn.commit()
-                self.log.info("Moved old version of an article to the archive.")
-            except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
-                    pymysql.IntegrityError, TypeError) as error:
-                self.log.error("Something went wrong in archive: %s", error)
+            # # Add the old version to the ArchiveVersion table
+            # try:
+            #     self.cursor.execute(self.insert_archive, old_version_list)
+            #     self.conn.commit()
+            #     self.log.info("Moved old version of an article to the archive.")
+            # except (pymysql.err.OperationalError, pymysql.ProgrammingError, pymysql.InternalError,
+            #         pymysql.IntegrityError, TypeError) as error:
+            #     self.log.error("Something went wrong in archive: %s", error)
 
         return item
 
@@ -424,7 +424,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
     cfg = None
     es = None
     index_current = None
-    index_archive = None
+    # index_archive = None
     mapping = None
     running = False
 
@@ -446,7 +446,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             connection_class=RequestsHttpConnection
         )
         self.index_current = self.database["index_current"]
-        self.index_archive = self.database["index_archive"]
+        # self.index_archive = self.database["index_archive"]
         self.mapping = self.database["mapping"]
 
         # check connection to Database and set the configuration
@@ -464,9 +464,9 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             if not self.es.indices.exists(self.index_current):
                 self.es.indices.create(index=self.index_current, ignore=[400, 404])
                 self.es.indices.put_mapping(index=self.index_current, body=self.mapping)
-            if not self.es.indices.exists(self.index_archive):
-                self.es.indices.create(index=self.index_archive, ignore=[400, 404])
-                self.es.indices.put_mapping(index=self.index_archive, body=self.mapping)
+            # if not self.es.indices.exists(self.index_archive):
+            #     self.es.indices.create(index=self.index_archive, ignore=[400, 404])
+            #     self.es.indices.put_mapping(index=self.index_archive, body=self.mapping)
             self.running = True
 
             # restore previous logging level
@@ -488,9 +488,9 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                 request = self.es.search(index=self.index_current, body={'query': {'match': {'url.keyword': item['url']}}})
                 if request['hits']['total']['value'] > 0:
                     # save old version into index_archive
-                    old_version = request['hits']['hits'][0]
-                    old_version['_source']['descendent'] = True
-                    self.es.index(index=self.index_archive, doc_type='_doc', body=old_version['_source'])
+                    # old_version = request['hits']['hits'][0]
+                    # old_version['_source']['descendent'] = True
+                    # self.es.index(index=self.index_archive, doc_type='_doc', body=old_version['_source'])
                     version += 1
                     ancestor = old_version['_id']
 
@@ -583,7 +583,7 @@ class PandasStorage(ExtractedInformationStorage):
     cfg = None
     es = None
     index_current = None
-    index_archive = None
+    # index_archive = None
     mapping = None
     running = False
 
