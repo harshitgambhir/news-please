@@ -6,14 +6,14 @@ class NewsArticle(object):
     date_download = None
     date_modify = None
     date_publish = None
-    description = None
-    filename = None
-    image_url = None
+    # description = None
+    # filename = None
+    # image_url = None
     language = None
-    localpath = None
+    # localpath = None
     source_domain = None
-    maintext = None
-    text = None
+    # maintext = None
+    # text = None
     title = None
     title_page = None
     title_rss = None
@@ -40,14 +40,14 @@ class NewsArticle(object):
             'date_download': self.date_download,
             'date_modify': self.date_modify,
             'date_publish': self.date_publish,
-            'description': self.description,
-            'filename': self.filename,
-            'image_url': self.image_url,
+            # 'description': self.description,
+            # 'filename': self.filename,
+            # 'image_url': self.image_url,
             'language': self.language,
-            'localpath': self.localpath,
-            'maintext': self.maintext,
+            # 'localpath': self.localpath,
+            # 'maintext': self.maintext,
             'source_domain': self.source_domain,
-            'text': self.text,
+            # 'text': self.text,
             'title': self.title,
             'title_page': self.title_page,
             'title_rss': self.title_rss,
