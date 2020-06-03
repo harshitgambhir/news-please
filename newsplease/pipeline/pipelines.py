@@ -306,7 +306,7 @@ class ExtractedInformationStorage(object):
             'title_page': ExtractedInformationStorage.ensure_str(item['html_title']),
             'title_rss': ExtractedInformationStorage.ensure_str(item['rss_title']),
             'source_domain': ExtractedInformationStorage.ensure_str(item['source_domain']),
-            # 'maintext': item['article_text'],
+            'maintext': item['article_text'],
             'url': item['url']
         }
 
@@ -341,7 +341,7 @@ class ExtractedInformationStorage(object):
         news_article.title_page = item['title_page']
         news_article.title_rss = item['title_rss']
         news_article.source_domain = item['source_domain']
-        # news_article.maintext = item['maintext']
+        news_article.maintext = item['maintext']
         news_article.url = item['url']
         return news_article
 
