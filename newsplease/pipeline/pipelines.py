@@ -13,6 +13,7 @@ from dateutil import parser as dateparser
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from scrapy.exceptions import DropItem
 from requests_aws4auth import AWS4Auth
+from transformers import pipeline
 
 from NewsArticle import NewsArticle
 from .extractor import article_extractor
@@ -27,6 +28,8 @@ try:
 except ImportError:
     np = None
     pd = None
+
+summarizer = pipeline("summarization", model="bart-large-cnn")
 
 
 class HTMLCodeHandling(object):
@@ -499,6 +502,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info['ancestor'] = ancestor
                 extracted_info['version'] = version
+                extracted_info['summary'] = summarizer(extracted_info['maintext'], min_length=30, max_length=1000)
                 self.es.index(index=self.index_current, doc_type='_doc', id=ancestor,
                               body=extracted_info)
 
