@@ -14,6 +14,7 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 from scrapy.exceptions import DropItem
 from requests_aws4auth import AWS4Auth
 from transformers import pipeline
+from sentence_transformers import SentenceTransformer
 
 from NewsArticle import NewsArticle
 from .extractor import article_extractor
@@ -30,6 +31,7 @@ except ImportError:
     pd = None
 
 summarizer = pipeline("summarization", model="bart-large-cnn")
+st = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
 
 
 class HTMLCodeHandling(object):
@@ -450,8 +452,15 @@ class ElasticsearchStorage(ExtractedInformationStorage):
         )
         self.index_current = self.database["index_current"]
         # self.index_archive = self.database["index_archive"]
-        self.mapping = self.database["mapping"]
-
+        self.mapping = {
+            "settings": {
+                "index": {
+                    "knn": True,
+                    "knn.space_type": "cosinesimil"
+                }
+            },
+            "mappings":  self.database["mapping"]
+        }
         # check connection to Database and set the configuration
 
         try:
@@ -502,7 +511,9 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info['ancestor'] = ancestor
                 extracted_info['version'] = version
-                extracted_info['summary'] = summarizer(extracted_info['maintext'], min_length=30, max_length=1000)
+                summary = summarizer(extracted_info['maintext'], min_length=30, max_length=1000)
+                extracted_info['summary'] = summary
+                extracted_info['summary_vector'] = st.encode([summary], show_progress_bar=False)[0].tolist()
                 self.es.index(index=self.index_current, doc_type='_doc', id=ancestor,
                               body=extracted_info)
 
