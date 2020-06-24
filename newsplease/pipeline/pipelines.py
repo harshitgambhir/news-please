@@ -451,8 +451,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
         self.mapping = {
             "settings": {
                 "index": {
-                    "knn": True,
-                    "knn.space_type": "cosinesimil"
+                    "knn": True
                 }
             },
             "mappings":  self.database["mapping"]
@@ -471,8 +470,8 @@ class ElasticsearchStorage(ExtractedInformationStorage):
 
             # check if the necessary indices exist and create them if needed
             if not self.es.indices.exists(self.index_current):
-                self.es.indices.create(index=self.index_current, ignore=[400, 404])
-                self.es.indices.put_mapping(index=self.index_current, body=self.mapping)
+                self.es.indices.create(index=self.index_current, body=self.mapping, ignore=[400, 404])
+                # self.es.indices.put_mapping(index=self.index_current, body=self.mapping)
             # if not self.es.indices.exists(self.index_archive):
             #     self.es.indices.create(index=self.index_archive, ignore=[400, 404])
             #     self.es.indices.put_mapping(index=self.index_archive, body=self.mapping)
