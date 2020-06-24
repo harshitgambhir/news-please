@@ -30,10 +30,6 @@ except ImportError:
     np = None
     pd = None
 
-summarizer = pipeline("summarization", model="bart-large-cnn")
-st = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
-
-
 class HTMLCodeHandling(object):
     """
     Handles reponses to HTML responses other than 200 (accept).
@@ -462,7 +458,8 @@ class ElasticsearchStorage(ExtractedInformationStorage):
             "mappings":  self.database["mapping"]
         }
         # check connection to Database and set the configuration
-
+        self.summarizer = pipeline("summarization", model="bart-large-cnn")
+        self.st = SentenceTransformer('distilbert-base-nli-stsb-mean-tokens')
         try:
             # check if server is available
             self.es.ping()
@@ -511,9 +508,9 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info['ancestor'] = ancestor
                 extracted_info['version'] = version
-                summary = summarizer(extracted_info['maintext'], min_length=30, max_length=1000)
+                summary = self.summarizer(extracted_info['maintext'], min_length=30, max_length=1000)
                 extracted_info['summary'] = summary
-                extracted_info['summary_vector'] = st.encode([summary], show_progress_bar=False)[0].tolist()
+                extracted_info['summary_vector'] = self.st.encode([summary], show_progress_bar=False)[0].tolist()
                 self.es.index(index=self.index_current, doc_type='_doc', id=ancestor,
                               body=extracted_info)
 
