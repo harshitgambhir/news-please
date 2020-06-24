@@ -506,7 +506,7 @@ class ElasticsearchStorage(ExtractedInformationStorage):
                     version += 1
                     ancestor = old_version['_id']
 
-                # save new version into old id of index_curren
+                # save new version into old id of index_current
                 self.log.info("Saving to Elasticsearch: %s" % item['url'])
                 extracted_info = ExtractedInformationStorage.extract_relevant_info(item)
                 extracted_info['ancestor'] = ancestor
