@@ -304,7 +304,7 @@ class ExtractedInformationStorage(object):
             'date_publish': item['article_publish_date'],
             # 'description': item['article_description'],
             # 'filename': item['filename'],
-            # 'image_url': item['article_image'],
+            'image_url': item['article_image'],
             'language': item['article_language'],
             # 'localpath': item['local_path'],
             'title': item['article_title'],
@@ -339,7 +339,7 @@ class ExtractedInformationStorage(object):
         news_article.date_publish = ExtractedInformationStorage.datestring_to_date(item['date_publish'])
         # news_article.description = item['description']
         # news_article.filename = item['filename']
-        # news_article.image_url = item['image_url']
+        news_article.image_url = item['image_url']
         news_article.language = item['language']
         # news_article.localpath = item['localpath']
         news_article.title = item['title']
